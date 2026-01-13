@@ -37,11 +37,12 @@
                 @endif
             </td>
             <td class="p-3 text-center">
-                <a href="/siswa/{{ $s->id }}/edit" class="text-blue-600 mr-3">Edit</a>
+                <a href="/siswa/{{ $s->id }}/edit" class="inline-block bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Edit</a>
                 <form action="/siswa/{{ $s->id }}" method="POST" class="inline">
                     @csrf @method('DELETE')
-                    <button class="text-red-600" onclick="return confirm('Hapus siswa ini?')">Hapus</button>
+                    <button class="inline-block bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-600" onclick="return confirm('Hapus siswa ini?')">Hapus</button>
                 </form>
+                <a href="{{ route('pembayaran.siswa', $s->id) }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Riwayat SPP</a>
             </td>
         </tr>
         @empty

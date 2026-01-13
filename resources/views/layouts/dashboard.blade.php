@@ -18,6 +18,7 @@
             <a href="/siswa" class="block px-4 py-2 rounded hover:bg-blue-600">📋 Data Siswa</a>
             <a href="/dashboard" class="block px-4 py-2 rounded hover:bg-blue-600">🏆 Ranking Siswa</a>
             <a href="/nilai" class="block px-4 py-2 rounded hover:bg-blue-600">📝 Input Nilai</a>
+            <a href="{{ route('pembayaran.index') }}" class="block px-4 py-2 rounded hover:bg-blue-600">💳 Pembayaran SPP</a>
         </nav>
     </aside>
 
