@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('siswas', function (Blueprint $table) {
-            $table->integer('nilai')->nullable();
+        Schema::create('spps', function (Blueprint $table) {
+            $table->id();
+            $table->string('tahun');
+            $table->integer('nominal');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('siswas', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('spps');
     }
 };

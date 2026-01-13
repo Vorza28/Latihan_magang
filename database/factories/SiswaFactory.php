@@ -17,7 +17,10 @@ class SiswaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nama' => $this->faker->name(),
+            'nis' => $this->faker->unique()->numerify('2023###'),
+            'kelas' => $this->faker->randomElement(['X-A', 'X-B', 'X-C']),
+            'nilai' => $this->faker->numberBetween(60, 100),
         ];
     }
 }
