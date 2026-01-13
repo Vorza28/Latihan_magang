@@ -3,115 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Kelas;
+use App\Models\Spp;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $siswas = Siswa::all();
+        $siswas = Siswa::with(['kelas','spp'])->latest()->get();
         return view('siswa.index', compact('siswas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('siswa.create');
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+        $spps  = Spp::orderBy('tahun','desc')->get();
+
+        return view('siswa.create', compact('kelas','spps'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
-            'nis' => 'required|unique:siswas,nis',
-            'kelas' => 'required',
+            'nama'     => 'required',
+            'nis'      => 'required|unique:siswas,nis',
+            'kelas_id' => 'required|exists:kelas,id',
+            'spp_id'   => 'required|exists:spps,id',
         ]);
 
-        Siswa::create($request->all());
-
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Siswa created successfully.');
+        Siswa::create($request->only(['nama','nis','kelas_id','spp_id']));
+        return redirect('/siswa')->with('success', 'Siswa berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Siswa $siswa)
-    {
-        return view('siswa.show', compact('siswa'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Siswa $siswa)
     {
-        return view('siswa.edit', compact('siswa'));
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+        $spps  = Spp::orderBy('tahun','desc')->get();
+
+        return view('siswa.edit', compact('siswa','kelas','spps'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Siswa $siswa)
     {
         $request->validate([
-            'nama' => 'required',
-            'nis' => 'required|unique:siswas,nis,' . $siswa->id,
-            'kelas' => 'required',
+            'nama'     => 'required',
+            'nis'      => 'required|unique:siswas,nis,' . $siswa->id,
+            'kelas_id' => 'required|exists:kelas,id',
+            'spp_id'   => 'required|exists:spps,id',
         ]);
 
-        $siswa->update($request->all());
-
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Siswa updated successfully.');
+        $siswa->update($request->only(['nama','nis','kelas_id','spp_id']));
+        return redirect('/siswa')->with('success', 'Siswa berhasil diubah');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Siswa $siswa)
     {
         $siswa->delete();
-
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Siswa deleted successfully.');
+        return back()->with('success', 'Siswa berhasil dihapus');
     }
 
+    // TAB: Input Nilai
     public function nilaiIndex()
     {
-    $siswas = Siswa::all();
-    return view('siswa.nilai', compact('siswas'));
+        $siswas = Siswa::with(['kelas','spp'])->orderBy('nama')->get();
+        return view('siswa.nilai', compact('siswas'));
     }
 
     public function nilaiUpdate(Request $request, Siswa $siswa)
     {
-    $request->validate([
-        'nilai' => 'required|numeric|min:0|max:100'
-    ]);
+        $request->validate([
+            'nilai' => 'required|integer|min:0|max:100'
+        ]);
 
-    $siswa->update([
-        'nilai' => $request->nilai
-    ]);
-
-    return redirect('/nilai');
+        $siswa->update(['nilai' => $request->nilai]);
+        return back()->with('success', 'Nilai berhasil disimpan');
     }
 
+    // TAB: Ranking
     public function dashboard()
     {
-    $siswas = Siswa::whereNotNull('nilai')
-        ->orderBy('nilai', 'desc')
-        ->get();
+        $siswas = Siswa::with(['kelas','spp'])
+            ->whereNotNull('nilai')
+            ->orderByDesc('nilai')
+            ->get();
 
-    return view('dashboard', compact('siswas'));
+        return view('dashboard', compact('siswas'));
     }
-
 }

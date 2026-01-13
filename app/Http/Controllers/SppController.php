@@ -12,7 +12,8 @@ class SppController extends Controller
      */
     public function index()
     {
-        //
+        $spps = Spp::all();
+        return view('spp.index', compact('spps'));
     }
 
     /**
@@ -20,7 +21,7 @@ class SppController extends Controller
      */
     public function create()
     {
-        //
+        return view('spp.create');
     }
 
     /**
@@ -28,7 +29,15 @@ class SppController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'tahun' => 'required|unique:spps,tahun',
+            'nominal' => 'required|numeric',
+        ]);
+
+        Spp::create($request->all());
+
+        return redirect()->route('spp.index')
+                        ->with('success', 'SPP created successfully.');
     }
 
     /**
@@ -36,7 +45,7 @@ class SppController extends Controller
      */
     public function show(Spp $spp)
     {
-        //
+        return view('spp.show', compact('spp'));
     }
 
     /**
@@ -44,7 +53,7 @@ class SppController extends Controller
      */
     public function edit(Spp $spp)
     {
-        //
+        return view('spp.edit', compact('spp'));
     }
 
     /**
@@ -52,7 +61,15 @@ class SppController extends Controller
      */
     public function update(Request $request, Spp $spp)
     {
-        //
+        $request->validate([
+            'tahun' => 'required|unique:spps,tahun,' . $spp->id,
+            'nominal' => 'required|numeric',
+        ]);
+
+        $spp->update($request->all());
+
+        return redirect()->route('spp.index')
+                        ->with('success', 'SPP updated successfully.');
     }
 
     /**
@@ -60,6 +77,9 @@ class SppController extends Controller
      */
     public function destroy(Spp $spp)
     {
-        //
+        $spp->delete();
+
+        return redirect()->route('spp.index')
+                        ->with('success', 'SPP deleted successfully.');
     }
 }
