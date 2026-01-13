@@ -23,6 +23,11 @@ class SiswaSeeder extends Seeder
             ['nama'=>'Andi Wijaya','nis'=>'2023001','kelas_id'=>$xa?->id,'spp_id'=>$spp?->id,'nilai'=>95],
             ['nama'=>'Budi Santoso','nis'=>'2023002','kelas_id'=>$xa?->id,'spp_id'=>$spp?->id,'nilai'=>88],
             ['nama'=>'Citra Lestari','nis'=>'2023003','kelas_id'=>$xb?->id,'spp_id'=>$spp?->id,'nilai'=>92],
+            ['nama'=>'Dewi Anggraini','nis'=>'2023004','kelas_id'=>$xb?->id,'spp_id'=>$spp?->id,'nilai'=>85],
+            ['nama'=>'Eka Pratama','nis'=>'2023005','kelas_id'=>$xa?->id,'spp_id'=>$spp?->id,'nilai'=>90],
+            ['nama'=>'Fajar Nugroho','nis'=>'2023006','kelas_id'=>$xb?->id,'spp_id'=>$spp?->id,'nilai'=>87],
+            ['nama'=>'Gina Marlina','nis'=>'2023007','kelas_id'=>$xa?->id,'spp_id'=>$spp?->id,'nilai'=>93],
+            ['nama'=>'Hadi Susanto','nis'=>'2023008','kelas_id'=>$xb?->id,'spp_id'=>$spp?->id,'nilai'=>89],
         ];
 
         foreach ($data as $row) {

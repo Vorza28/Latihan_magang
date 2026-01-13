@@ -39,7 +39,7 @@
 
         <!-- FOOTER -->
         <footer class="bg-white text-center p-4 text-sm text-gray-500 border-t">
-            © {{ date('Y') }} Sistem Siswa - Laravel 12
+            © {{ date('Y') }} Siswa Cerdas - Aryasuta Daniswara
         </footer>
 
     </div>

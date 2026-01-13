@@ -15,12 +15,12 @@
         <div class="text-3xl font-bold">{{ $siswas->count() }}</div>
     </div>
 
-    <div class="bg-blue-600 text-white p-4 rounded shadow">
+    <div class="bg-green-600 text-white p-4 rounded shadow">
         <div class="text-sm">Nilai Tertinggi</div>
         <div class="text-3xl font-bold">{{ $siswas->max('nilai') ?? 0 }}</div>
     </div>
 
-    <div class="bg-blue-600 text-white p-4 rounded shadow">
+    <div class="bg-yellow-600 text-white p-4 rounded shadow">
         <div class="text-sm">Nilai Rata-rata</div>
         <div class="text-3xl font-bold">
             {{ $siswas->count() ? round($siswas->avg('nilai'), 1) : 0 }}
@@ -35,7 +35,6 @@
             <th class="p-3 text-left">Nama</th>
             <th class="p-3 text-left">NIS</th>
             <th class="p-3 text-left">Kelas</th>
-            <th class="p-3 text-left">SPP</th>
             <th class="p-3 text-center">Nilai</th>
         </tr>
     </thead>
@@ -46,13 +45,6 @@
             <td class="p-3">{{ $s->nama }}</td>
             <td class="p-3">{{ $s->nis }}</td>
             <td class="p-3">{{ $s->kelas?->nama_kelas ?? '-' }}</td>
-            <td class="p-3">
-                @if($s->spp)
-                    {{ $s->spp->tahun }} - Rp {{ number_format($s->spp->nominal) }}
-                @else
-                    -
-                @endif
-            </td>
             <td class="p-3 font-bold text-center">{{ $s->nilai }}</td>
         </tr>
         @empty

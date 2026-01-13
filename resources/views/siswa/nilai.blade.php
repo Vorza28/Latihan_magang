@@ -15,7 +15,6 @@
             <th class="p-3 text-left">Nama</th>
             <th class="p-3 text-left">NIS</th>
             <th class="p-3 text-left">Kelas</th>
-            <th class="p-3 text-left">SPP</th>
             <th class="p-3 text-center w-32">Nilai</th>
             <th class="p-3 text-center w-40">Aksi</th>
         </tr>
@@ -27,13 +26,6 @@
             <td class="p-3">{{ $s->nama }}</td>
             <td class="p-3">{{ $s->nis }}</td>
             <td class="p-3">{{ $s->kelas?->nama_kelas ?? '-' }}</td>
-            <td class="p-3">
-                @if($s->spp)
-                    {{ $s->spp->tahun }} - Rp {{ number_format($s->spp->nominal) }}
-                @else
-                    -
-                @endif
-            </td>
 
             <td class="p-3 text-center">{{ $s->nilai ?? '-' }}</td>
 
