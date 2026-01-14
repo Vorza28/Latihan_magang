@@ -76,10 +76,10 @@
             </span>
         </td>
         <td class="p-3 text-center">
-            <a href="{{ route('pembayaran.edit',$p->id) }}" class="text-blue-600 mr-2">Edit</a>
+            <a href="{{ route('pembayaran.edit',$p->id) }}" class="px-2 py-1 rounded text-white mr-2 bg-blue-600">Edit</a>
             <form action="{{ route('pembayaran.destroy',$p->id) }}" method="POST" class="inline">
             @csrf @method('DELETE')
-            <button onclick="return confirm('Hapus pembayaran ini?')" class="text-red-600">Hapus</button>
+            <button onclick="return confirm('Hapus pembayaran ini?')" class="px-2 py-1 rounded text-white bg-red-600">Hapus</button>
             </form>
         </td>
         </tr>
