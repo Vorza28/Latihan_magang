@@ -7,6 +7,8 @@ use App\Models\Pembayaran;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\StorePembayaranRequest;
+use App\Http\Requests\UpdatePembayaranRequest;
 
 class PembayaranController extends Controller
 {
@@ -47,33 +49,23 @@ class PembayaranController extends Controller
     }
 
     // SIMPAN PEMBAYARAN
-    public function store(Request $request)
+    public function store(StorePembayaranRequest $request)
     {
-        $request->validate([
-            'siswa_id'      => 'required|exists:siswas,id',
-            'bulan'         => 'required|integer|min:1|max:12',
-            'tahun'         => 'required|digits:4',
-            'jumlah_bayar'  => 'required|integer|min:0',
-            'tanggal_bayar' => 'nullable|date',
-            'status'        => ['required', Rule::in(['lunas','belum'])],
-            'keterangan'    => 'nullable|string|max:255',
-        ]);
+    $siswa = Siswa::findOrFail($request->siswa_id);
 
-        $siswa = Siswa::with('spp')->findOrFail($request->siswa_id);
+    Pembayaran::create([
+        'siswa_id'      => $siswa->id,
+        'spp_id'        => $siswa->spp_id,
+        'bulan'         => $request->bulan,
+        'tahun'         => $request->tahun,
+        'jumlah_bayar'  => $request->jumlah_bayar,
+        'tanggal_bayar' => $request->tanggal_bayar,
+        'status'        => $request->status,
+        'keterangan'    => $request->keterangan,
+    ]);
 
-        // spp_id disimpan sebagai snapshot
-        Pembayaran::create([
-            'siswa_id'      => $siswa->id,
-            'spp_id'        => $siswa->spp_id, // penting
-            'bulan'         => (int) $request->bulan,
-            'tahun'         => (int) $request->tahun,
-            'jumlah_bayar'  => (int) $request->jumlah_bayar,
-            'tanggal_bayar' => $request->tanggal_bayar,
-            'status'        => $request->status,
-            'keterangan'    => $request->keterangan,
-        ]);
-
-        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil ditambahkan');
+    return redirect()->route('pembayaran.index')
+        ->with('success', 'Pembayaran berhasil ditambahkan');
     }
 
     // EDIT
@@ -84,40 +76,27 @@ class PembayaranController extends Controller
     }
 
     // UPDATE
-    public function update(Request $request, Pembayaran $pembayaran)
+    public function update(UpdatePembayaranRequest $request, Pembayaran $pembayaran)
     {
-        $request->validate([
-            'bulan'         => 'required|integer|min:1|max:12',
-            'tahun'         => 'required|digits:4',
-            'jumlah_bayar'  => 'required|integer|min:0',
-            'tanggal_bayar' => 'nullable|date',
-            'status'        => ['required', Rule::in(['lunas','belum'])],
-            'keterangan'    => 'nullable|string|max:255',
-        ]);
+    // Cegah dobel pembayaran (siswa_id, bulan, tahun)
+    $exists = Pembayaran::where('siswa_id', $pembayaran->siswa_id)
+        ->where('bulan', $request->bulan)
+        ->where('tahun', $request->tahun)
+        ->where('id', '!=', $pembayaran->id)
+        ->exists();
 
-        // validasi unique (siswa_id, bulan, tahun) saat update
-        $exists = Pembayaran::where('siswa_id', $pembayaran->siswa_id)
-            ->where('bulan', (int)$request->bulan)
-            ->where('tahun', (int)$request->tahun)
-            ->where('id', '!=', $pembayaran->id)
-            ->exists();
+    if ($exists) {
+        return back()
+            ->withErrors(['bulan' => 'Data pembayaran bulan & tahun ini sudah ada untuk siswa tersebut.'])
+            ->withInput();
+    }
 
-        if ($exists) {
-            return back()
-                ->withErrors(['bulan' => 'Data pembayaran bulan & tahun ini sudah ada untuk siswa tersebut.'])
-                ->withInput();
-        }
+    $pembayaran->update($request->only([
+        'bulan', 'tahun', 'jumlah_bayar', 'tanggal_bayar', 'status', 'keterangan'
+    ]));
 
-        $pembayaran->update([
-            'bulan'         => (int) $request->bulan,
-            'tahun'         => (int) $request->tahun,
-            'jumlah_bayar'  => (int) $request->jumlah_bayar,
-            'tanggal_bayar' => $request->tanggal_bayar,
-            'status'        => $request->status,
-            'keterangan'    => $request->keterangan,
-        ]);
-
-        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil diupdate');
+    return redirect()->route('pembayaran.index')
+        ->with('success', 'Pembayaran berhasil diupdate');
     }
 
     // HAPUS

@@ -25,3 +25,5 @@ Route::delete('/pembayaran/{pembayaran}', [PembayaranController::class, 'destroy
 
 // riwayat pembayaran per siswa
 Route::get('/pembayaran/siswa/{siswa}', [PembayaranController::class, 'siswa'])->name('pembayaran.siswa');
+
+Route::put('/pembayaran/{pembayaran}', [PembayaranController::class, 'update'])->name('pembayaran.update');
